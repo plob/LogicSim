@@ -23,7 +23,7 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=4
+current_page=2
 FILE_NAME_0=428;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FDynamicTree.py;0;4
 FILE_NAME_1=556;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
 FILE_NAME_2=281;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
@@ -32,3 +32,8 @@ FILE_NAME_4=213;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogi
 
 [VTE]
 last_dir=/home/blub
+
+[build-menu]
+EX_00_LB=_Ausführen
+EX_00_CM=ipython import "%f"
+EX_00_WD=

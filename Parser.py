@@ -1,37 +1,50 @@
-import GateLib
+from GateLib import *
 import pdb
 
 class Parser():
 	def __init__(self):
 		self.treelist = list()
 		self.treeNumber = 0
-#		tokenlists = list()
-#		tokenNumber = 0
+		self.tokenlist = list()
+		self.lineEnd = True
 
 	def getTreeList(self):
 		return self.treelist
 
 	def parseFile(self, filename):
-		fd = open(filename, r)
+		fd = open(filename, 'r')
 		line = fd.readline()
 
+		##### BRACKPOINT #####
+		pdb.set_trace()
+		######################
+
 		while line:
-			interpretLine(line)
+			if not line.isspace():
+				self.interpretLine(line)
 			line = fd.readline()
 
-		return True
+		#TODO close fd
 
 	def tokenize(self, line):
-		tokenlists = list()
+		line = line.strip()
+		lineEndOld = self.lineEnd
 
 		if line.endswith(';'):
 			line = line.rstrip(';')
-			if line.find(';') != -1:
-				cmdlist = line.split(';')
+			tmptokenlist = line.split()
+			self.lineEnd = True
+		elif line.endswith(','):
+			line = line.rstrip(',')
+			tmptokenlist = line.split()
+			self.lineEnd = False
+		else:
+			return 'error'
 
-				for i in range(0, --len(cmdlist)):
-					cmd = cmdlist[i]
-					++tokenNumber
+		if lineEndOld:
+			self.tokenlist = tmptokenlist
+		else:
+			self.tokenlist.append(tmptokenlist)
 
 
 	def makeStrOfTokens(self, start, tokenlist):
@@ -68,37 +81,37 @@ class Parser():
 		return tokenlist + tmplist
 
 	def interpretLine(self, line):
-		tokenlist = self.tokenize(line)
+		if line.startswith('//'):
+			return
 
-		for i in range(0,--len(tokenlist)):
-			if tokenlist[i][0] == '\\':
-				none
-			elif tokenlist[i][0] == 'module':
-#				++treeNumber
-				tmptokenlist = makeStrOfTokens(1, tokenlist[i])
-				self.treelist.append(DynamicTree(VerilogModule(tmptokenlist[1], tmptokenlist[0])))#tokenlist[i][1], tokenlist[i][2]))
-			elif tokenlist[i][0] == 'input':
-				self.treelist[self.treeNumber].setBranch(PortList('input' ,tokenlist[i][1]))
-			elif tokenlist[i][0] == 'output':
-				self.treelist[self.treeNumber].setBranch(PortList('output', tokenlist[i][1]))
-			elif tokenlist[i][0] == 'wire':
-				self.treelist[self.treeNumber].setBranch(PortList('wire', tokenlist[i][1]))
-			elif tokenlist[i][0] == 'reg':
-				self.treelist[self.treeNumber].setBranch(PortList('reg', tokenlist[i][1]))
-			elif tokenlist[i][0] == 'and':
-				self.treelist[self.treeNumber].setBranch(AND(tokenlist[i][1], tokenlist[i][2], tokenlist[i][3]))
-			elif tokenlist[i][0] == 'or':
-				self.treelist[self.treeNumber].setBranch(OR(tokenlist[i][1], tokenlist[i][2], tokenlist[i][3]))
-			elif tokenlist[i][0] == 'nand':
-				self.treelist[self.treeNumber].setBranch(NAND(tokenlist[i][1], tokenlist[i][2], tokenlist[i][3]))
-			elif tokenlist[i][0] == 'nor':
-				self.treelist[self.treeNumber].setBranch(NOR(tokenlist[i][1], tokenlist[i][2], tokenlist[i][3]))
-			elif tokenlist[i][0] == 'xor':
-				self.treelist[self.treeNumber].setBranch(XOR(tokenlist[i][1], tokenlist[i][2], tokenlist[i][3]))
-			elif tokenlist[i][0] == 'endmodule':
-				self.treelist[self.treeNumber].setEnd()
-			else:
-				self.treelist[self.treeNumber].setBranch(tokenlist[i][0])
+		self.tokenize(line)
+		if not self.lineEnd
+			return
+
+		tmptokenlist = self.makeStrOfTokens(2, tokenlist)
+
+		if tokenlist[0] == 'module':
+			++self.treeNumber
+			self.treelist.append(DynamicTree(VerilogModule(tmptokenlist[1], tmptokenlist[2])))
+		elif tokenlist[0] == 'and':
+			self.treelist[self.treeNumber].setBranch(AND(tmptokenlist[1], tmptokenlist[2]))
+		elif tokenlist[0] == 'or':
+			self.treelist[self.treeNumber].setBranch(OR(tmptokenlist[1], tmptokenlist[2]))
+		elif tokenlist[0] == 'nand':
+			self.treelist[self.treeNumber].setBranch(NAND(tmptokenlist[1], tmptokenlist[2]))
+		elif tokenlist[0] == 'nor':
+			self.treelist[self.treeNumber].setBranch(NOR(tmptokenlist[1], tmptokenlist[2]))
+		elif tokenlist[0] == 'xor':
+			self.treelist[self.treeNumber].setBranch(XOR(tmptokenlist[1], tmptokenlist[2]))
+		elif tokenlist[0] == 'not':
+			self.treelist[self.treeNumber].setBranch(NOT(tmptokenlist[1], tmptokenlist[2]))
+		elif tokenlist[0] == 'buf':
+			None
+			#self.treelist[self.treeNumber].setBranch(XOR(tmptokenlist[1], tmptokenlist[2]))
+		elif tokenlist[0] == 'endmodule':
+			self.treelist[self.treeNumber].setEnd()
+		else:
+			self.treelist[self.treeNumber].setBranch(tmptokenlist[0])
 
 	def checkSyntax():
 		for i in range(0, --len(treelist)):
