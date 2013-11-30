@@ -1,11 +1,21 @@
 #import tree_structure
-from DynamicTree import DynamicTree
+#from DynamicTree import DynamicTree
 
 class VerilogModule():
 	def __init__(self, name, ioPorts):
 		self.name = name
 		self.ioPorts = PortList(ioPorts)
 		self.endModule = False
+		self.gateList = list()
+
+	def addGate(self, obj):
+		self.gateList.append(obj)
+
+	def getNode(self):
+		return self.node
+
+	def getGateList(self):
+		return self.gateList
 
 	def getName(self):
 		return self.name
@@ -13,8 +23,8 @@ class VerilogModule():
 	def getPorts(self):
 		return self.ioPorts.getPorts()
 
-	def appendPorts(self, ports):
-		self.ioPorts.append(ports)
+#	def appendPorts(self, ports):
+#		self.ioPorts.append(ports)
 
 	def setEnd(self):
 		self.endModule = True
@@ -29,9 +39,17 @@ class PortList():
 
 	def makeList(self, ports):
 		tmplist = ports.rstrip(')')
-		tmplist = self.portlist.lstrip('(')
-		tmplist = self.portlist.replace(' ','')
-		return self.portlist.split(',')
+		tmplist = tmplist.lstrip('(')
+		tmplist = tmplist.replace(' ','')
+		return tmplist.split(',')
+
+	def makeInp(self):
+		self.portlist.reverse()
+		self.portlist.pop()
+		self.portlist.reverse()
+
+	def makeOutp(self):
+		self.portlist = self.portlist[0]
 
 	def getPorts(self):
 		return self.portlist
@@ -42,7 +60,7 @@ class PortList():
 
 	def equals(self, portListObj):
 		tmpPortlist = portListObj.getPorts()
-		for i in range(0,len(tmpPortlist)):
+		for i in xrange(len(tmpPortlist)):
 			if self.portlist.count(tmpPortlist[i]) == 0:
 				return False
 
@@ -56,15 +74,30 @@ class GATE():
 	def __init__(self, name, ports):
 		self.name = name
 
-
 		self.inp = PortList(ports)
+		self.inp.makeInp()
+
 		self.outp = PortList(ports)
-		return
+		self.inp.makeOutp()
+		self.outp = self.outp.getPorts()
+		self.outp = self.outp[0]
+
+	def getInp(self):
+		return self.inp
 
 	def getName(self):
 		return self.name
 
 class AND(GATE):
+	def outpFunc(self):
+		inpList = self.inp.getPorts()
+		func = dict()
+
+		for i in xrange(len(inpList)):
+			func = func.update({self.outp : gateFunc(func.get(self.outp), inpList[i])})
+
+
+
 	def evaluate(self, inp):	#TODO: write evaluate function for all gates
 		return
 
@@ -79,7 +112,12 @@ class OR(GATE):
 class NOR(GATE):
 	def evaluate(self, inp):	#TODO: write evaluate function for all gates
 		return
+
 class XOR(GATE):
+	def evaluate(self, inp):	#TODO: write evaluate function for all gates
+		return
+
+class NOT(GATE):
 	def evaluate(self, inp):	#TODO: write evaluate function for all gates
 		return
 

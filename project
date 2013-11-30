@@ -23,12 +23,13 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=2
-FILE_NAME_0=428;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FDynamicTree.py;0;4
-FILE_NAME_1=556;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
-FILE_NAME_2=281;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
+current_page=5
+FILE_NAME_0=40;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FDynamicTree.py;0;4
+FILE_NAME_1=1168;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
+FILE_NAME_2=2825;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
 FILE_NAME_3=0;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Ftree_structure.py;0;4
 FILE_NAME_4=213;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Faufgabe;0;4
+FILE_NAME_5=0;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc17.v;0;4
 
 [VTE]
 last_dir=/home/blub
