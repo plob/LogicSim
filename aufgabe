@@ -1,0 +1,10 @@
+29.11.13
+bis nächste Woche:
+	equivalent check (minisat2)
+		mit sat, für jedes gatter klausel erzeugen
+		in textfile abspeichern oder sat instanz erzeugen
+
+		klausel format: c comment
+						p anzahl der variablen
+						1 2 -3 0 (oder verknüpft)
+
