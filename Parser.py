@@ -28,9 +28,9 @@ class Parser():
 			line = line.rstrip(';')
 			if line.find(';') != -1:
 				cmdlist = line.split(';')
-				i = 0
-				cmd = cmdlist[i]
-				while cmd:
+
+				for i in range(0, --len(cmdlist)):
+					cmd = cmdlist[i]
 					++tokenNumber
 
 
