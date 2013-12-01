@@ -1,10 +1,10 @@
-#import tree_structure
+from copy import copy
 #from DynamicTree import DynamicTree
 
 class VerilogModule():
 	def __init__(self, name, ioPorts):
 		self.name = name
-		self.ioPorts = PortList(ioPorts)
+		self.ioPorts = ioPorts
 		self.endModule = False
 		self.gateList = list()
 
@@ -21,7 +21,7 @@ class VerilogModule():
 		return self.name
 
 	def getPorts(self):
-		return self.ioPorts.getPorts()
+		return self.ioPorts
 
 #	def appendPorts(self, ports):
 #		self.ioPorts.append(ports)
@@ -73,51 +73,74 @@ class PortList():
 class GATE():
 	def __init__(self, name, ports):
 		self.name = name
-
-		self.inp = PortList(ports)
-		self.inp.makeInp()
-
-		self.outp = PortList(ports)
-		self.inp.makeOutp()
-		self.outp = self.outp.getPorts()
-		self.outp = self.outp[0]
+		self.outp = ports[0]
+		ports.remove(self.outp)
+		self.inp = ports
 
 	def getInp(self):
-		return self.inp
+		return copy(self.inp)
+
+	def getOutp(self):
+		return copy(self.outp)
 
 	def getName(self):
-		return self.name
+		return copy(self.name)
 
 class AND(GATE):
-	def outpFunc(self):
-		inpList = self.inp.getPorts()
-		func = dict()
+	def outpFunc(self, lst):
+		##### BREAKPOINT #####
+		#import pdb
+		#pdb.set_trace()
+		######################
 
-		for i in xrange(len(inpList)):
-			func = func.update({self.outp : gateFunc(func.get(self.outp), inpList[i])})
-
-
-
-	def evaluate(self, inp):	#TODO: write evaluate function for all gates
-		return
+		value = True
+		for i in xrange(len(self.inp)):
+			nextInp = lst.pop()
+			value = value and nextInp
+#			if not value:
+#				return lst + [value]
+		return lst + [bool(value)]
 
 class NAND(GATE):
-	def evaluate(self, inp):	#TODO: write evaluate function for all gates
-		return
+	def outpFunc(self, lst):
+		value = True
+		for i in xrange(len(self.inp)):
+			nextInp = lst.pop()
+			value = value and nextInp
+#			if not value:
+#				return lst + [not value]
+		return lst + [bool(not value)]
 
 class OR(GATE):
-	def evaluate(self, inp):	#TODO: write evaluate function for all gates
-		return
+	def outpFunc(self, lst):
+		value = False
+		for i in xrange(len(self.inp)):
+			nextInp = lst.pop()
+			value = value or nextInp
+#			if value:
+#				return lst + [value]
+		return lst + [bool(value)]
 
 class NOR(GATE):
-	def evaluate(self, inp):	#TODO: write evaluate function for all gates
-		return
+	def outpFunc(self, lst):
+		value = False
+		for i in xrange(len(self.inp)):
+			nextInp = lst.pop()
+			value = value or nextInp
+#			if value:
+#				return lst + [not value]
+		return lst + [bool(not value)]
 
 class XOR(GATE):
-	def evaluate(self, inp):	#TODO: write evaluate function for all gates
-		return
+	def outpFunc(self, lst):
+		value = False
+		for i in xrange(len(self.inp)):
+			nextInp = lst.pop()
+			value = value != nextInp
+		return lst + [bool(value)]
 
 class NOT(GATE):
-	def evaluate(self, inp):	#TODO: write evaluate function for all gates
-		return
+	def outpFunc(self, lst):
+		lst.append(not lst.pop())
+		return lst
 

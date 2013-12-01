@@ -1,5 +1,4 @@
 from GateLib import *
-import pdb
 
 class Parser():
 	def __init__(self, filename):
@@ -21,7 +20,8 @@ class Parser():
 #			return
 
 		##### BREAKPOINT #####
-		pdb.set_trace()
+		#import pdb
+		#pdb.set_trace()
 		######################
 
 		while line:
@@ -95,31 +95,38 @@ class Parser():
 		if isinstance(self.tokenlist, list):
 			if not(self.tokenlist[0] == 'input' or self.tokenlist[0] == 'output' or self.tokenlist[0] == 'wire' or self.tokenlist[0] == 'reg'):
 				tmptokenlist = self.makeStrOfTokens(2, self.tokenlist)
+				tmpPortList = self.makeList(tmptokenlist[2])
 			else:
 				tmptokenlist = self.makeStrOfTokens(1, self.tokenlist)
 
 		if self.tokenlist[0] == 'module':
 			++self.moduleNumber
-			self.modulelist.append(VerilogModule(tmptokenlist[1], tmptokenlist[2]))
+			self.modulelist.append(VerilogModule(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'and':
-			self.modulelist[self.moduleNumber].addGate(AND(tmptokenlist[1], tmptokenlist[2]))
+			self.modulelist[self.moduleNumber].addGate(AND(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'or':
-			self.modulelist[self.moduleNumber].addGate(OR(tmptokenlist[1], tmptokenlist[2]))
+			self.modulelist[self.moduleNumber].addGate(OR(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'nand':
-			self.modulelist[self.moduleNumber].addGate(NAND(tmptokenlist[1], tmptokenlist[2]))
+			self.modulelist[self.moduleNumber].addGate(NAND(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'nor':
-			self.modulelist[self.moduleNumber].addGate(NOR(tmptokenlist[1], tmptokenlist[2]))
+			self.modulelist[self.moduleNumber].addGate(NOR(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'xor':
-			self.modulelist[self.moduleNumber].addGate(XOR(tmptokenlist[1], tmptokenlist[2]))
+			self.modulelist[self.moduleNumber].addGate(XOR(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'not':
-			self.modulelist[self.moduleNumber].addGate(NOT(tmptokenlist[1], tmptokenlist[2]))
+			self.modulelist[self.moduleNumber].addGate(NOT(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'buf':
 			None
-			#self.modulelist[self.moduleNumber].addBranch(XOR(tmptokenlist[1], tmptokenlist[2]))
+			#self.modulelist[self.moduleNumber].addBranch(XOR(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist == 'endmodule':
 			self.modulelist[self.moduleNumber].setEnd()
 		else:
-			self.modulelist[self.moduleNumber].addGate(tmptokenlist)
+			self.modulelist[self.moduleNumber].addGate((tmptokenlist[0], self.makeList(tmptokenlist[1])))
+
+	def makeList(self, ports):
+		tmplist = ports.rstrip(')')
+		tmplist = tmplist.lstrip('(')
+		tmplist = tmplist.replace(' ','')
+		return tmplist.split(',')
 
 	def checkSyntax():
 		for i in xrange(len(modulelist)):
