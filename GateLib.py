@@ -1,4 +1,4 @@
-from copy import copy
+#from copy import copy
 #from DynamicTree import DynamicTree
 
 class VerilogModule():
@@ -33,38 +33,38 @@ class VerilogModule():
 		return self.endModule
 
 
-class PortList():
-	def __init__(self, ports):
-		self.portlist = self.makeList(ports)
-
-	def makeList(self, ports):
-		tmplist = ports.rstrip(')')
-		tmplist = tmplist.lstrip('(')
-		tmplist = tmplist.replace(' ','')
-		return tmplist.split(',')
-
-	def makeInp(self):
-		self.portlist.reverse()
-		self.portlist.pop()
-		self.portlist.reverse()
-
-	def makeOutp(self):
-		self.portlist = self.portlist[0]
-
-	def getPorts(self):
-		return self.portlist
-
-	def append(self, ports):
-		tmpList = self.makeList(ports)
-		self.portlist.append(tmplist)
-
-	def equals(self, portListObj):
-		tmpPortlist = portListObj.getPorts()
-		for i in xrange(len(tmpPortlist)):
-			if self.portlist.count(tmpPortlist[i]) == 0:
-				return False
-
-		return True
+#class PortList():
+#	def __init__(self, ports):
+#		self.portlist = self.makeList(ports)
+#
+#	def makeList(self, ports):
+#		tmplist = ports.rstrip(')')
+#		tmplist = tmplist.lstrip('(')
+#		tmplist = tmplist.replace(' ','')
+#		return tmplist.split(',')
+#
+#	def makeInp(self):
+#		self.portlist.reverse()
+#		self.portlist.pop()
+#		self.portlist.reverse()
+#
+#	def makeOutp(self):
+#		self.portlist = self.portlist[0]
+#
+#	def getPorts(self):
+#		return self.portlist
+#
+#	def append(self, ports):
+#		tmpList = self.makeList(ports)
+#		self.portlist.append(tmplist)
+#
+#	def equals(self, portListObj):
+#		tmpPortlist = portListObj.getPorts()
+#		for i in xrange(len(tmpPortlist)):
+#			if self.portlist.count(tmpPortlist[i]) == 0:
+#				return False
+#
+#		return True
 
 #class Connections():
 #	def __init__(self, name):
@@ -97,9 +97,9 @@ class AND(GATE):
 		for i in xrange(len(self.inp)):
 			nextInp = lst.pop()
 			value = value and nextInp
-#			if not value:
-#				return lst + [value]
-		return lst + [bool(value)]
+			if not value:
+				return bool(value)
+		return bool(value)
 
 class NAND(GATE):
 	def outpFunc(self, lst):
@@ -107,9 +107,9 @@ class NAND(GATE):
 		for i in xrange(len(self.inp)):
 			nextInp = lst.pop()
 			value = value and nextInp
-#			if not value:
-#				return lst + [not value]
-		return lst + [bool(not value)]
+			if not value:
+				return bool(not value)
+		return bool(not value)
 
 class OR(GATE):
 	def outpFunc(self, lst):
@@ -117,9 +117,9 @@ class OR(GATE):
 		for i in xrange(len(self.inp)):
 			nextInp = lst.pop()
 			value = value or nextInp
-#			if value:
-#				return lst + [value]
-		return lst + [bool(value)]
+			if value:
+				return bool(value)
+		return bool(value)
 
 class NOR(GATE):
 	def outpFunc(self, lst):
@@ -127,9 +127,9 @@ class NOR(GATE):
 		for i in xrange(len(self.inp)):
 			nextInp = lst.pop()
 			value = value or nextInp
-#			if value:
-#				return lst + [not value]
-		return lst + [bool(not value)]
+			if value:
+				return bool(not value)
+		return bool(not value)
 
 class XOR(GATE):
 	def outpFunc(self, lst):
@@ -137,10 +137,9 @@ class XOR(GATE):
 		for i in xrange(len(self.inp)):
 			nextInp = lst.pop()
 			value = value != nextInp
-		return lst + [bool(value)]
+		return bool(value)
 
 class NOT(GATE):
 	def outpFunc(self, lst):
-		lst.append(not lst.pop())
-		return lst
+		return (not lst.pop())
 

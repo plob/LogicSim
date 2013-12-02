@@ -23,15 +23,14 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=5
-FILE_NAME_0=214;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FDynamicTree.py;0;4
-FILE_NAME_1=1802;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
-FILE_NAME_2=3540;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
-FILE_NAME_3=0;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Ftree_structure.py;0;4
-FILE_NAME_4=213;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Faufgabe;0;4
-FILE_NAME_5=307;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FEvaluation.py;0;4
-FILE_NAME_6=186;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc17.v;0;4
-FILE_NAME_7=128;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc499.v;0;4
+current_page=3
+FILE_NAME_0=2676;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
+FILE_NAME_1=2404;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
+FILE_NAME_2=213;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Faufgabe;0;4
+FILE_NAME_3=1395;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FEvaluation.py;0;4
+FILE_NAME_4=306;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc17.v;0;4
+FILE_NAME_5=128;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc499.v;0;4
+FILE_NAME_6=305;Verilog;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Ftest.v;0;4
 
 [VTE]
 last_dir=/home/blub
