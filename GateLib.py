@@ -78,13 +78,13 @@ class GATE():
 		self.inp = ports
 
 	def getInp(self):
-		return copy(self.inp)
+		return self.inp
 
 	def getOutp(self):
-		return copy(self.outp)
+		return self.outp
 
 	def getName(self):
-		return copy(self.name)
+		return self.name
 
 class AND(GATE):
 	def outpFunc(self, lst):
