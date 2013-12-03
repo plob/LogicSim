@@ -1,9 +1,7 @@
 from Parser import Parser
 from MakeLogic import MakeLogic
 from copy import copy
-from os import fork
-from os import _exit
-from os import waitpid
+from subprocess import os
 
 class EquivalenceCheck():
 	def __init__(self, logic1, logic2):
@@ -77,18 +75,23 @@ class EquivalenceCheck():
 			inpForLogic1.update({outp : self.generateArg(self.logic1.get(outp)[1])})
 			inpForLogic2.update({outp : self.generateArg(self.logic2.get(outp)[1])})
 
-		for outp in self.outputs1.keys():
+		#for outp in self.outputs1.keys():
 			self.outputs1.update({outp : self.logic1.get(outp)[0](inpForLogic1.get(outp))})
 			self.outputs2.update({outp : self.logic2.get(outp)[0](inpForLogic2.get(outp))})
 
 	def compareLogic(self):
 		inpnum = len(self.inputs.keys())
 		divBy4 = 2**inpnum/4
-		pid1 = fork()
+		pid2 = 0
+		pid3 = 0
+		pipe1_in, pipe1_out = os.pipe()
+		pipe2_in, pipe2_out = os.pipe()
+		pipe3_in, pipe3_out = os.pipe()
+		pid1 = os.fork()
 		if not pid1:
-			pid2 = fork()
+			pid2 = os.fork()
 			if not pid2:
-				pid3 = fork()
+				pid3 = os.fork()
 				if not pid3:
 					print 'last child'
 					for i in xrange(3*divBy4, 4*divBy4):
@@ -96,11 +99,11 @@ class EquivalenceCheck():
 						for outp in self.outputs1.keys():
 							if not (self.outputs1.get(outp) == self.outputs2.get(outp)):
 								print 'False'
-								t1 = False
-								_exit(0)
+								os.write(pipe1_out, '')
+								os._exit(0)
 					print 'True'
-					t1 = True
-					_exit(0)
+					os.write(pipe1_out, '1')
+					os._exit(0)
 				else:
 					print 'parent: ' + str(pid3)
 					for i in xrange(2*divBy4, 3*divBy4):
@@ -108,12 +111,12 @@ class EquivalenceCheck():
 						for outp in self.outputs1.keys():
 							if not (self.outputs1.get(outp) == self.outputs2.get(outp)):
 								print 'False'
-								t2 = False
+								os.write(pipe2_out, '')
 								_exit(0)
 					print 'True'
-					_exit(0)
-					waitpid(pid3, 0)
-					t2 = True
+					os.write(pipe2_out, '1')
+					os.waitpid(pid3, 0)
+					os._exit(0)
 			else:
 				print 'grandparent: ' + str(pid2)
 				for i in xrange(divBy4, 2*divBy4):
@@ -121,13 +124,12 @@ class EquivalenceCheck():
 					for outp in self.outputs1.keys():
 						if not (self.outputs1.get(outp) == self.outputs2.get(outp)):
 							print 'False'
-							t3 = False
-							_exit(0)
+							os.write(pipe3_out, '')
+							os._exit(0)
 				print 'True'
-				t3 = True
-				waitpid(pid3, 0)
-				waitpid(pid2, 0)
-				_exit(0)
+				os.write(pipe3_out, '1')
+				os.waitpid(pid3, 0)
+				os._exit(0)
 		else:
 			print 'grandgrandparent: ' + str(pid1)
 			for i in xrange(0, divBy4):
@@ -138,11 +140,11 @@ class EquivalenceCheck():
 						t4 = False
 			print 'True'
 			t4 = True
-			waitpid(pid1, 0)
-			waitpid(pid2, 0)
-			waitpid(pid3, 0)
+			os.waitpid(pid1, 0)
 
-		return t1 and t2 and t3 and t4
+		same = os.read(pipe1_in, 1) and os.read(pipe2_in, 1) and os.read(pipe3_in, 1) and t4
+
+		return same
 
 	def generateArg(self, pattern):
 		newarg = list()

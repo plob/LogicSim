@@ -23,15 +23,16 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=2
+current_page=3
 FILE_NAME_0=1658;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
 FILE_NAME_1=2404;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
-FILE_NAME_2=1071;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FMakeLogic.py;0;4
-FILE_NAME_3=528;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FEquivalenceCheck.py;0;4
+FILE_NAME_2=863;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FMakeLogic.py;0;4
+FILE_NAME_3=2193;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FEquivalenceCheck.py;0;4
 FILE_NAME_4=306;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc17.v;0;4
-FILE_NAME_5=128;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc499.v;0;4
+FILE_NAME_5=118;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc499.v;0;4
 FILE_NAME_6=21;Verilog;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Ftest.v;0;4
-FILE_NAME_7=213;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Faufgabe;0;4
+FILE_NAME_7=247;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Faufgabe;0;4
+FILE_NAME_8=0;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc432.v;0;4
 
 [VTE]
 last_dir=/home/blub
