@@ -1,12 +1,15 @@
 from GateLib import *
+#from sys import close
 
 class Parser():
 	def __init__(self, filename):
-		self.modulelist = list()
-		self.moduleNumber = 0
+		self.modulelist = list() ### if multiple modules
+		self.moduleNames = dict()
+		self.moduleNumber = 0 ### needed for more than one module
 		self.tokenlist = list()
 		self.lineEnd = True
 		self.filename = filename
+		self.parseFile()
 
 	def getModuleList(self):
 		return self.modulelist
@@ -28,11 +31,10 @@ class Parser():
 			if not line.isspace():
 				self.interpretLine(line)
 			line = fd.readline()
+		fd.close()
 
-		#TODO close fd
-
-	def tokenize(self, line):
-		line = line.strip()
+	def tokenize(self, line):	#TODO may implement makeStrOfTokens here
+		line = line.strip()		#would be nice, look down there for hints
 		lineEndOld = self.lineEnd
 
 		if line.endswith(';'):
@@ -55,8 +57,8 @@ class Parser():
 	def makeStrOfTokens(self, start, tokenlist):
 		tmplist = list()
 		tmpstr = str()
-		twoPortLists = False	#TODO shorten it!
-
+		twoPortLists = False	#TODO shorten it! its old and way to long
+								#TODO make it to split the name from the port list if not devided by a space
 		for i in xrange(start, len(tokenlist)):
 			lokalelement = tokenlist.pop()
 
@@ -100,27 +102,29 @@ class Parser():
 				tmptokenlist = self.makeStrOfTokens(1, self.tokenlist)
 
 		if self.tokenlist[0] == 'module':
-			++self.moduleNumber
+			self.moduleNames.update({tmtokenlist[1] : self.moduleNumber})
 			self.modulelist.append(VerilogModule(tmptokenlist[1], tmpPortList))
+			self.moduleNumber = self.moduleNumber + 1
 		elif self.tokenlist[0] == 'and':
-			self.modulelist[self.moduleNumber].addGate(AND(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber - 1].addGate(AND(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'or':
-			self.modulelist[self.moduleNumber].addGate(OR(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber - 1].addGate(OR(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'nand':
-			self.modulelist[self.moduleNumber].addGate(NAND(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber - 1].addGate(NAND(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'nor':
-			self.modulelist[self.moduleNumber].addGate(NOR(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber - 1].addGate(NOR(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'xor':
-			self.modulelist[self.moduleNumber].addGate(XOR(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber - 1].addGate(XOR(tmptokenlist[1], tmpPortList))
+		elif self.tokenlist[0] == 'xnor':
+			None #never have seen it, but may some where in the future
 		elif self.tokenlist[0] == 'not':
-			self.modulelist[self.moduleNumber].addGate(NOT(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber - 1].addGate(NOT(tmptokenlist[1], tmpPortList))
 		elif self.tokenlist[0] == 'buf':
-			None
-			#self.modulelist[self.moduleNumber].addBranch(XOR(tmptokenlist[1], tmpPortList))
+			None #never have seen it, but may some where in the future
 		elif self.tokenlist == 'endmodule':
-			self.modulelist[self.moduleNumber].setEnd()
+			self.modulelist[self.moduleNumber - 1].setEnd()
 		else:
-			self.modulelist[self.moduleNumber].addGate((tmptokenlist[0], self.makeList(tmptokenlist[1])))
+			self.modulelist[self.moduleNumber - 1].addGate((tmptokenlist[0], self.makeList(tmptokenlist[1])))
 
 	def makeList(self, ports):
 		tmplist = ports.rstrip(')')
@@ -129,23 +133,15 @@ class Parser():
 		return tmplist.split(',')
 
 	def checkSyntax():
-		for i in xrange(len(modulelist)):
-			if not modulelist[i].getEnd():
-				return False
-
-			branchList = modulelist[i].getBranchList()
-			#TODO: check for syntax error
+			### implementation of simple syntax check possible
 		return True
 
 	def insertModules(self):
-		modListTop = list()
-		modListBottom = list()
+			### implementation for more than one module possible	#TODO
+			#for module in modulelist:
+			#	for name in moduleNames.keys():
+			#		if module.hasModule(name):
+			#			gateList = modulelist[moduleNames.get(name)].getGateList()
+			#			module.substitudeModule(name, gateList)
 
-
-		for i in xrange(len(modulelist)):
-			modList.append((modulelist[i].getName(), i))
-
-			branchList = modulelist[i].getBranchList()
-#			for n in range(0, --len(branchList)):
-#				if branchList[n]:
-#					modListBottom.append((
+		return None

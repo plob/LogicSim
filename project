@@ -23,16 +23,19 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=3
-FILE_NAME_0=1658;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
-FILE_NAME_1=2404;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
-FILE_NAME_2=863;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FMakeLogic.py;0;4
-FILE_NAME_3=2193;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FEquivalenceCheck.py;0;4
-FILE_NAME_4=306;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc17.v;0;4
-FILE_NAME_5=118;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc499.v;0;4
-FILE_NAME_6=21;Verilog;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Ftest.v;0;4
-FILE_NAME_7=247;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Faufgabe;0;4
-FILE_NAME_8=0;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc432.v;0;4
+current_page=11
+FILE_NAME_0=0;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FGateLib.py;0;4
+FILE_NAME_1=23;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FParser.py;0;4
+FILE_NAME_2=2183;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FMakeSAT.py;0;4
+FILE_NAME_3=821;Python;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FMakeLogic.py;0;4
+FILE_NAME_4=4324;Python;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2FEquivalenceCheck.py;0;4
+FILE_NAME_5=0;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc17.v;0;4
+FILE_NAME_6=323;Verilog;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc17_f.v;0;4
+FILE_NAME_7=6101;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc432.v;0;4
+FILE_NAME_8=118;Verilog;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Fc499.v;0;4
+FILE_NAME_9=21;Verilog;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Fbenchmark%2Ftest.v;0;4
+FILE_NAME_10=247;None;0;EISO-8859-1;1;1;1;%2Fhome%2Fblub%2FDocuments%2FETI%2FLogicSim%2Faufgabe;0;4
+FILE_NAME_11=125;None;0;EUTF-8;1;1;1;%2Fhome%2Fblub%2FDownloads%2Fminisat%2Fuf20-0999.cnf;0;4
 
 [VTE]
 last_dir=/home/blub

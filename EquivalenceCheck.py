@@ -99,7 +99,7 @@ class EquivalenceCheck():
 						for outp in self.outputs1.keys():
 							if not (self.outputs1.get(outp) == self.outputs2.get(outp)):
 								print 'False'
-								os.write(pipe1_out, '')
+								os.write(pipe1_out, '0')
 								os._exit(0)
 					print 'True'
 					os.write(pipe1_out, '1')
@@ -111,8 +111,8 @@ class EquivalenceCheck():
 						for outp in self.outputs1.keys():
 							if not (self.outputs1.get(outp) == self.outputs2.get(outp)):
 								print 'False'
-								os.write(pipe2_out, '')
-								_exit(0)
+								os.write(pipe2_out, '0')
+								os._exit(0)
 					print 'True'
 					os.write(pipe2_out, '1')
 					os.waitpid(pid3, 0)
@@ -124,7 +124,7 @@ class EquivalenceCheck():
 					for outp in self.outputs1.keys():
 						if not (self.outputs1.get(outp) == self.outputs2.get(outp)):
 							print 'False'
-							os.write(pipe3_out, '')
+							os.write(pipe3_out, '0')
 							os._exit(0)
 				print 'True'
 				os.write(pipe3_out, '1')
@@ -132,22 +132,27 @@ class EquivalenceCheck():
 				os._exit(0)
 		else:
 			print 'grandgrandparent: ' + str(pid1)
+			t4 = True
 			for i in xrange(0, divBy4):
 				self.generateOutputs()
 				for outp in self.outputs1.keys():
 					if not (self.outputs1.get(outp) == self.outputs2.get(outp)):
 						print 'False'
 						t4 = False
-			print 'True'
-			t4 = True
-			os.waitpid(pid1, 0)
+						os.waitpid(pid1, 0)
+						break
+				if not t4:
+					break
+			if t4:
+				print 'True'
+				os.waitpid(pid1, 0)
 
 		same = os.read(pipe1_in, 1) and os.read(pipe2_in, 1) and os.read(pipe3_in, 1) and t4
 
 		return same
 
-	def generateArg(self, pattern):
-		newarg = list()
+	def generateArg(self, pattern):	### bottleneck --> try to optimize
+		newarg = list()				### 60ms for c432.v at last output (cpu: i5 2.4GHz)
 
 		for i in xrange(len(pattern)):
 			if isinstance(pattern[i], list):
