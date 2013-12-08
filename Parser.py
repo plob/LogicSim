@@ -1,5 +1,4 @@
 from GateLib import *
-#from sys import close
 
 class Parser():
 	def __init__(self, filename):
@@ -33,18 +32,24 @@ class Parser():
 			line = fd.readline()
 		fd.close()
 
-	def tokenize(self, line):	#TODO may implement makeStrOfTokens here
-		line = line.strip()		#would be nice, look down there for hints
+	def tokenize(self, line):
+		line = line.strip()
 		lineEndOld = self.lineEnd
 
 		if line.endswith(';'):
-			line = line.rstrip(';')
-			tmptokenlist = line.split()
-			self.lineEnd = True
+			if lineEndOld:
+				tmptokenlist = self.splitLine(line)
+				self.lineEnd = True
+			else:
+				tmptokenlist = self.splitLine(line, False)
+				self.lineEnd = True
 		elif line.endswith(','):
-			#line = line.rstrip(',')
-			tmptokenlist = line.split()
-			self.lineEnd = False
+			if lineEndOld:
+				tmptokenlist = self.splitLine(line)
+				self.lineEnd = False
+			else:
+				tmptokenlist = self.splitLine(line, False)
+				self.lineEnd = False
 		else:
 			tmptokenlist = line
 
@@ -53,38 +58,37 @@ class Parser():
 		else:
 			self.tokenlist = self.tokenlist + tmptokenlist
 
+	def splitLine(self, line, tokenizePorts = False):
+		token = str()
+		tokenlist = list()
+		portList = list()
 
-	def makeStrOfTokens(self, start, tokenlist):
-		tmplist = list()
-		tmpstr = str()
-		twoPortLists = False	#TODO shorten it! its old and way to long
-								#TODO make it to split the name from the port list if not devided by a space
-		for i in xrange(start, len(tokenlist)):
-			lokalelement = tokenlist.pop()
-
-			if lokalelement.endswith(')') and lokalelement.startswith('(') and not twoPortLists:
-				twoPortLists = True
-				tmpstr = lokalelement
-			elif lokalelement.endswith(')') and lokalelement.startswith('(') and twoPortLists:
-				tmplist.append(tmpstr)
-				tmpstr = lokalelement
-			elif lokalelement.endswith(')') and twoPortLists:
-				tmplist.append(tmpstr)
-				tmpstr = ''
-				tmpstr = tmpstr + lokalelement
-			elif lokalelement.endswith(')') and not twoPortLists:
-				twoPortLists = True
-				tmpstr = tmpstr + lokalelement
-			elif lokalelement.endswith(','):
-				tmpstr = lokalelement + tmpstr
-			elif lokalelement.startswith('('):
-				tmpstr = lokalelement + tmpstr
+		for char in line:
+			if char == ' ':
+				if not tokenizePorts:
+					tokenlist.append(token)
+					token = ''
+			elif char == '(':
+				if token != '':
+					tokenlist.append(token)
+					token = ''
+				tokenizePorts = True
+			elif char == ',':
+				if token != '':
+					portList.append(token)
+					tokenizePorts = True
+					token = ''
+			elif char == ';':
+				if token != '':
+					portList.append(token)
+			elif char == ')':
+				portList.append(token)
+				tokenizePorts = False
 			else:
-				tmpstr = lokalelement
+				token = token + char
 
-		tmplist.append(tmpstr)
-		tmplist.reverse()
-		return tokenlist + tmplist
+		tokenlist.append(portList)
+		return tokenlist
 
 	def interpretLine(self, line):
 		if line.startswith('//'):
@@ -94,37 +98,46 @@ class Parser():
 		if not self.lineEnd:
 			return
 
-		if isinstance(self.tokenlist, list):
-			if not(self.tokenlist[0] == 'input' or self.tokenlist[0] == 'output' or self.tokenlist[0] == 'wire' or self.tokenlist[0] == 'reg'):
-				tmptokenlist = self.makeStrOfTokens(2, self.tokenlist)
-				tmpPortList = self.makeList(tmptokenlist[2])
-			else:
-				tmptokenlist = self.makeStrOfTokens(1, self.tokenlist)
-
 		if self.tokenlist[0] == 'module':
-			self.moduleNames.update({tmtokenlist[1] : self.moduleNumber})
-			self.modulelist.append(VerilogModule(tmptokenlist[1], tmpPortList))
+			self.moduleNames.update({self.tokenlist[1] : self.moduleNumber})
+			self.modulelist.append(VerilogModule(self.tokenlist[1], self.tokenlist[2]))
 			self.moduleNumber = self.moduleNumber + 1
+		elif self.tokenlist[0] == 'reg':
+			for reg in self.tokenlist[1]:
+				self.modulelist[self.moduleNumber-1].addGate(REG(reg))
+		elif self.tokenlist[0] == 'trireg':
+			for trireg in self.tokenlist[1]:
+				self.modulelist[self.moduleNumber-1].addGate(TRIREG(trireg))
+		elif self.tokenlist[0] == 'input':
+			self.modulelist[self.moduleNumber-1].addGate((self.tokenlist[0], self.tokenlist[1]))
+		elif self.tokenlist[0] == 'output':
+			self.modulelist[self.moduleNumber-1].addGate((self.tokenlist[0], self.tokenlist[1]))
+		elif self.tokenlist[0] == 'wire':
+			self.modulelist[self.moduleNumber-1].addGate((self.tokenlist[0], self.tokenlist[1]))
 		elif self.tokenlist[0] == 'and':
-			self.modulelist[self.moduleNumber - 1].addGate(AND(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber-1].addGate(AND(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist[0] == 'or':
-			self.modulelist[self.moduleNumber - 1].addGate(OR(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber-1].addGate(OR(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist[0] == 'nand':
-			self.modulelist[self.moduleNumber - 1].addGate(NAND(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber-1].addGate(NAND(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist[0] == 'nor':
-			self.modulelist[self.moduleNumber - 1].addGate(NOR(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber-1].addGate(NOR(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist[0] == 'xor':
-			self.modulelist[self.moduleNumber - 1].addGate(XOR(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber-1].addGate(XOR(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist[0] == 'xnor':
-			None #never have seen it, but may some where in the future
+			self.modulelist[self.moduleNumber-1].addGate(XNOR(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist[0] == 'not':
-			self.modulelist[self.moduleNumber - 1].addGate(NOT(tmptokenlist[1], tmpPortList))
+			self.modulelist[self.moduleNumber-1].addGate(NOT(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist[0] == 'buf':
-			None #never have seen it, but may some where in the future
+			self.modulelist[self.moduleNumber - 1].addGate(BUF(self.tokenlist[1], self.tokenlist[2]))
+		elif self.tokenlist[0] == 'nmos':
+			self.modulelist[self.moduleNumber-1].addGate(NMOS(self.tokenlist[1], self.tokenlist[2]))
+		elif self.tokenlist[0] == 'pmos':
+			self.modulelist[self.moduleNumber-1].addGate(PMOS(self.tokenlist[1], self.tokenlist[2]))
 		elif self.tokenlist == 'endmodule':
-			self.modulelist[self.moduleNumber - 1].setEnd()
+			self.modulelist[self.moduleNumber-1].setEnd()
 		else:
-			self.modulelist[self.moduleNumber - 1].addGate((tmptokenlist[0], self.makeList(tmptokenlist[1])))
+			self.modulelist[self.moduleNumber-1].addGate(GATE(self.tokenlist[1], ['dummy_out',] + self.tokenlist[2]))
 
 	def makeList(self, ports):
 		tmplist = ports.rstrip(')')

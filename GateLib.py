@@ -1,5 +1,5 @@
-#from copy import copy
-#from DynamicTree import DynamicTree
+from copy import copy
+from MakeLogic import MakeLogic
 
 class VerilogModule():
 	def __init__(self, name, ioPorts):
@@ -37,28 +37,24 @@ class VerilogModule():
 				break
 		return False
 
-	def substitudeModule(self, name, subGateList): #TODO
+	def substitudeModule(self, name, subModule): #TODO
 		for gate in self.gateList:
 			if name == gate.getName():
-				#ports equal? additional check possible
-				inputs = dict()
-				outputs = dict()
-				wires = dict()
-				#for item in subGateList:
-				#	if isinstance(item, tuple):
-				#		if item[0] == 'input':
-				#			inputs.update({item[1] : self.ConCounter})
-				#			subGateList.remove(item)
-				#		elif item[0] == 'output':
-				#			outputs = item[1]
-				#			subGateList.remove(item)
-				#		elif item[0] == 'wire':
-				#			wires = item[1]
-				#			subGateList.remove(item)
-				#		else:
-				#			None
-				#	else:
-				#		break
+				portsIns = gate.getInp()
+				portsMod = subModule.getPorts()
+				if subModule.gateList[0][0] == 'input':
+					inputs = subModule.gateList[0][1]
+				elif subModule.gateList[1][0] == 'input':
+					inputs = subModule.gateList[1][1]
+				if subModule.gateList[0][0] == 'output':
+					outputs = subModule.gateList[0][1]
+				elif subModule.gateList[1][0] == 'output':
+					outputs = subModule.gateList[1][1]
+
+				if (len(portsIns) - len(portsMod)):
+					return 'error'
+
+
 		return False
 
 class GATE():
@@ -85,9 +81,8 @@ class AND(GATE):
 		######################
 
 		value = True
-		for i in xrange(len(self.inp)):
-			nextInp = lst.pop()
-			value = value and nextInp
+		for inp in len:
+			value = value and inp
 			if not value:
 				return bool(value)
 		return bool(value)
@@ -106,9 +101,8 @@ class AND(GATE):
 class NAND(GATE):
 	def outpFunc(self, lst):
 		value = True
-		for i in xrange(len(self.inp)):
-			nextInp = lst.pop()
-			value = value and nextInp
+		for inp in lst:
+			value = value and inp
 			if not value:
 				return bool(not value)
 		return bool(not value)
@@ -127,9 +121,8 @@ class NAND(GATE):
 class OR(GATE):
 	def outpFunc(self, lst):
 		value = False
-		for i in xrange(len(self.inp)):
-			nextInp = lst.pop()
-			value = value or nextInp
+		for inp in lst:
+			value = value or inp
 			if value:
 				return bool(value)
 		return bool(value)
@@ -148,9 +141,8 @@ class OR(GATE):
 class NOR(GATE):
 	def outpFunc(self, lst):
 		value = False
-		for i in xrange(len(self.inp)):
-			nextInp = lst.pop()
-			value = value or nextInp
+		for inp in lst:
+			value = value or inp
 			if value:
 				return bool(not value)
 		return bool(not value)
@@ -168,11 +160,11 @@ class NOR(GATE):
 
 class XOR(GATE):
 	def outpFunc(self, lst):
-		value = False
-		for i in xrange(len(self.inp)):
-			nextInp = lst.pop()
-			value = value != nextInp
-		return bool(value)
+#		value = False	#function for more than 2 inputs
+#		for inp in lst:
+#			value = value != inp
+#		return bool(value)
+		return lst[0] != lst[1]
 
 	def makeClauses(self, pinDict):
 		inp0 = pinDict.get(self.inp[0])
@@ -194,9 +186,27 @@ class XOR(GATE):
 					'-' + `outp` + ' -' + `inp0` + ' -' + `inp1` + ' 0']
 		return clauses
 
+class XNOR(GATE):
+	def outpFunc(self, lst):
+#		value = False
+#		for inp in lst:
+#			value = value == inp
+#		return bool(value)
+		return lst[0] == lst[1]
+
+	def makeClauses(self, pinDict):
+		inp0 = pinDict.get(self.inp[0])
+		inp1 = pinDict.get(self.inp[1])
+		outp = pinDict.get(self.outp)
+		clauses = [`outp` + ' ' + `inp0` + ' ' + `inp1` + ' 0',\
+					'-' + `outp` + ' -' + `inp0` + ' ' + `inp1` + ' 0',\
+					'-' + `outp` + ' ' + `inp0` + ' -' + `inp1` + ' 0',\
+					`outp` + ' -' + `inp0` + ' -' + `inp1` + ' 0']
+		return clauses
+
 class NOT(GATE):
 	def outpFunc(self, lst):
-		return (not lst.pop())
+		return (not lst[0])
 
 	def makeClauses(self, pinDict):
 		inp = pinDict.get(self.inp[0])
@@ -205,3 +215,80 @@ class NOT(GATE):
 					'-' + `outp` + ' -' + `inp` + ' 0']
 		return clauses
 
+class BUF(GATE):
+	def outpFunc(self, lst):
+		return (lst[0])
+
+	def makeClauses(self, pinDict):
+		inp = pinDict.get(self.inp[0])
+		outp = pinDict.get(self.outp)
+		clauses = ['-' + `outp` + ' ' + `inp` + ' 0',\
+					`outp` + ' -' + `inp` + ' 0']
+		return clauses
+
+class MOS(GATE):
+	def __init__(self, name, ports):
+		GATE.__init__(self, name, ports)
+		self.gate = self.inp[1]
+		self.inp = self.inp[0]
+
+class NMOS(MOS):
+	def outpFunc(self, lst):
+		if lst[1]:
+			return lst[0]
+		else:
+			return 'Z'
+
+	def makeClauses(self, pinDict):
+		inp = pinDict.get(self.inp[0])
+		outp = pinDict.get(self.outp)
+		#TODO
+		return clauses
+
+class PMOS(MOS):
+	def outpFunc(self, lst):
+		if not lst[1]:
+			return lst[0]
+		else:
+			return 'Z'
+
+	def makeClauses(self, pinDict):
+		inp = pinDict.get(self.inp[0])
+		outp = pinDict.get(self.outp)
+		#TODO
+		return clauses
+
+class REG(GATE):
+	def __init__(self, name):
+		GATE.__init__(self, name, ['out', 'in'])
+		self.lastValue = False
+
+	def outpFunc(self, lst):
+		outp = self.lastValue
+		self.lastValue = lst[0]
+		return outp
+
+	def makeClauses(self, pinDict):
+		inp = pinDict.get(self.inp[0])
+		outp = pinDict.get(self.outp)
+		#TODO
+		return clauses
+
+class TRIREG(GATE):
+	def __init__(self, name):
+		GATE.__init__(self, name, ['out', 'in'])
+		self.lastValue = False
+
+	def outpFunc(self, lst):
+		if lst[0] == 'Z':
+			return self.lastValue
+		else:
+			outp = self.lastValue
+			self.lastValue = lst[0]
+		return lst[0]
+
+	def makeClauses(self, pinDict):
+		inp = pinDict.get(self.inp[0])
+		outp = pinDict.get(self.outp)
+		#TODO
+		return clauses
