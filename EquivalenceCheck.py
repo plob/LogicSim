@@ -1,5 +1,6 @@
 from Parser import Parser
 from MakeLogic import MakeLogic
+from GateLib import *
 from copy import copy
 from subprocess import os
 
@@ -151,14 +152,14 @@ class EquivalenceCheck():
 
 		return same
 
-	def generateArg(self, pattern):	### bottleneck --> try to optimize
-		newarg = list()				### 60ms for c432.v at last output (cpu: i5 2.4GHz)
+	def generateArg(self, pattern):	#bottleneck --> need improvement
+		newarg = list()
 
-		for i in xrange(len(pattern)):
-			if isinstance(pattern[i], list):
-				newarg.append(self.generateArg(pattern[i]))
+		for element in pattern:
+			if isinstance(element, list):
+				newarg.append(self.generateArg(element))
 			else:
-				newarg.append(self.inputs.get(pattern[i]))
+				newarg.append(self.inputs.get(element))
 
 		return newarg
 

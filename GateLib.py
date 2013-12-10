@@ -1,5 +1,5 @@
 from copy import copy
-from MakeLogic import MakeLogic
+#from MakeLogic import MakeLogic
 
 class VerilogModule():
 	def __init__(self, name, ioPorts):
@@ -8,6 +8,7 @@ class VerilogModule():
 		self.endModule = False
 		self.gateList = list()
 		self.ConCounter = 0
+		self.ioMap = dict()
 
 	def addGate(self, obj):
 		self.gateList.append(obj)
@@ -30,6 +31,12 @@ class VerilogModule():
 	def getEnd(self):
 		return self.endModule
 
+#	def makeIOmap(self):
+#		i = 0
+#		for port in self.ioPorts:
+#			if self.gateList[0][1].count(port):
+#				self.ioMap.update({i : self.gateList[0][1].index(port)
+
 	def hasModule(self, name):
 		for gate in self.gateList:
 			if name == gate.getName():
@@ -37,32 +44,25 @@ class VerilogModule():
 				break
 		return False
 
-	def substitudeModule(self, name, subModule): #TODO
-		for gate in self.gateList:
-			if name == gate.getName():
-				portsIns = gate.getInp()
-				portsMod = subModule.getPorts()
-				if subModule.gateList[0][0] == 'input':
-					inputs = subModule.gateList[0][1]
-				elif subModule.gateList[1][0] == 'input':
-					inputs = subModule.gateList[1][1]
-				if subModule.gateList[0][0] == 'output':
-					outputs = subModule.gateList[0][1]
-				elif subModule.gateList[1][0] == 'output':
-					outputs = subModule.gateList[1][1]
+	def makePortPattern(self):
+		i = 0
+		portPattern = dict()
+		inputs = self.gateList[0][1]
+		outputs = self.gateList[1][1]
+		for inp in inputs:
+			portPattern.update({'in_'+`i` : (self.ioPorts.index(inp), inp)})
+			i = i + 1
+		for outp in outputs:
+			portPattern.update({'out' : self.ioPorts.index(outp)})
 
-				if (len(portsIns) - len(portsMod)):
-					return 'error'
-
-
-		return False
+		return portPattern
 
 class GATE():
 	def __init__(self, name, ports):
 		self.name = name
 		self.outp = ports[0]
 		ports.remove(self.outp)
-		self.inp = tuple(ports)
+		self.inp = ports
 
 	def getInp(self):
 		return self.inp
@@ -73,6 +73,41 @@ class GATE():
 	def getName(self):
 		return self.name
 
+class ModuleAsGate(GATE):
+	def __init__(self, name, ports):
+		GATE.__init__(self, name, ['dummy_out',] + ports)
+
+	def setFunc(self, func):
+		self.function = func
+
+	def makePorts(self, pattern):
+		self.outp = self.inp[pattern.get('out')]
+		tmpInp = list()
+		self.inpDict = dict()
+		for i in xrange(len(self.inp)-1):
+			tmp = pattern.get('in_'+`i`)
+			tmpInp.append(self.inp[tmp[0]])
+			self.inpDict.update({tmp[1] : self.inp[pattern.get(tmp[0])]})
+		self.inp = tmpInp
+
+	def makeInp(self, pattern):
+		newInpts = list()
+
+		for element in pattern:
+			if isinstance(element, list):
+				newInpts.append(self.makeInp(element))
+			else:
+				newInpts.append(self.inpDict.get(element))
+		self.inp = newInpts
+		return newInpts
+
+	def outpFunc(self, lst):
+		return self.function(lst)
+
+	def makeClauses(self, pinDict):
+		#TODO
+		return clauses
+
 class AND(GATE):
 	def outpFunc(self, lst):
 		##### BREAKPOINT #####
@@ -81,7 +116,7 @@ class AND(GATE):
 		######################
 
 		value = True
-		for inp in len:
+		for inp in lst:
 			value = value and inp
 			if not value:
 				return bool(value)
@@ -232,11 +267,16 @@ class MOS(GATE):
 		self.gate = self.inp[1]
 		self.inp = self.inp[0]
 
+	def getInp(self):
+		return [self.inp, self.gate]
+
 class NMOS(MOS):
 	def outpFunc(self, lst):
 		if lst[1]:
+			print 'nmos ' + `self.name` + ' ' + `lst[0]`
 			return lst[0]
 		else:
+			print 'nmos ' + `self.name` + ' ' + 'Z'
 			return 'Z'
 
 	def makeClauses(self, pinDict):
@@ -260,8 +300,8 @@ class PMOS(MOS):
 
 class REG(GATE):
 	def __init__(self, name):
-		GATE.__init__(self, name, ['out', 'in'])
-		self.lastValue = False
+		GATE.__init__(self, name, [name+'_out', name])
+		self.lastValue = 'Z'
 
 	def outpFunc(self, lst):
 		outp = self.lastValue
@@ -276,15 +316,17 @@ class REG(GATE):
 
 class TRIREG(GATE):
 	def __init__(self, name):
-		GATE.__init__(self, name, ['out', 'in'])
-		self.lastValue = False
+		GATE.__init__(self, name, [name+'_out', name])
+		self.lastValue = 'Z'
 
 	def outpFunc(self, lst):
 		if lst[0] == 'Z':
+			print 'trireg ' + `self.name` + ' ' + `self.lastValue`
 			return self.lastValue
 		else:
 			outp = self.lastValue
 			self.lastValue = lst[0]
+		print 'trireg ' + `self.name` + ' ' + `lst[0]`
 		return lst[0]
 
 	def makeClauses(self, pinDict):

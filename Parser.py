@@ -1,4 +1,5 @@
 from GateLib import *
+from MakeLogic import MakeLogic
 
 class Parser():
 	def __init__(self, filename):
@@ -33,6 +34,11 @@ class Parser():
 		fd.close()
 
 	def tokenize(self, line):
+		##### BREAKPOINT #####
+		#import pdb
+		#pdb.set_trace()
+		######################
+
 		line = line.strip()
 		lineEndOld = self.lineEnd
 
@@ -48,7 +54,7 @@ class Parser():
 				tmptokenlist = self.splitLine(line)
 				self.lineEnd = False
 			else:
-				tmptokenlist = self.splitLine(line, False)
+				tmptokenlist = self.splitLine(line, True)
 				self.lineEnd = False
 		else:
 			tmptokenlist = line
@@ -56,12 +62,14 @@ class Parser():
 		if lineEndOld:
 			self.tokenlist = tmptokenlist
 		else:
-			self.tokenlist = self.tokenlist + tmptokenlist
+			i = len(self.tokenlist)
+			self.tokenlist[i-1] = self.tokenlist[i-1] + tmptokenlist[0]
 
 	def splitLine(self, line, tokenizePorts = False):
 		token = str()
 		tokenlist = list()
 		portList = list()
+		endOfLine = False
 
 		for char in line:
 			if char == ' ':
@@ -79,11 +87,13 @@ class Parser():
 					tokenizePorts = True
 					token = ''
 			elif char == ';':
-				if token != '':
-					portList.append(token)
+				if not endOfLine:
+					if token != '':
+						portList.append(token)
 			elif char == ')':
 				portList.append(token)
 				tokenizePorts = False
+				endOfLine = True
 			else:
 				token = token + char
 
@@ -137,7 +147,7 @@ class Parser():
 		elif self.tokenlist == 'endmodule':
 			self.modulelist[self.moduleNumber-1].setEnd()
 		else:
-			self.modulelist[self.moduleNumber-1].addGate(GATE(self.tokenlist[1], ['dummy_out',] + self.tokenlist[2]))
+			self.modulelist[self.moduleNumber-1].addGate(ModuleAsGate(self.tokenlist[1], self.tokenlist[2]))
 
 	def makeList(self, ports):
 		tmplist = ports.rstrip(')')
@@ -151,10 +161,20 @@ class Parser():
 
 	def insertModules(self):
 			### implementation for more than one module possible	#TODO
-			#for module in modulelist:
-			#	for name in moduleNames.keys():
-			#		if module.hasModule(name):
-			#			gateList = modulelist[moduleNames.get(name)].getGateList()
-			#			module.substitudeModule(name, gateList)
+			self.logicDict = dict()
+			mainModule = self.modulelist.pop()
+			for module in self.modulelist:
+				pattern = module.makePortPattern()
+				tmpLogic = MakeLogic(module)
+				tmpLogic.makeFunctions()
+				function = tmpLogic.getFunctions()
+				outp = function.get('outputs').keys()
+				function = function.get(outp[0])
+				self.logicDict.update({module.getName() : (pattern, function)})
 
-		return None
+			for gate in mainModule.getGateList():
+				if isinstance(gate, ModuleAsGate):
+					function = logicDict.get(gate.getName())
+					gate.makePorts(function[0])
+					gate.makeInp(function[1][1])
+					gate.setFunc(function[1][0])

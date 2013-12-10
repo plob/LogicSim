@@ -8,3 +8,15 @@ bis nächste Woche:
 						p anzahl der variablen
 						1 2 -3 0 (oder verknüpft)
 
+	zeitmessungen!
+
+	def generateArg(pattern):	#bottleneck --> need improvement
+		newarg = list()
+
+		for element in pattern:
+			if isinstance(element, list):
+				newarg.append(generateArg(element))
+			else:
+				newarg.append(inputs.get(element))
+
+		return newarg
